@@ -1,5 +1,7 @@
 name: Continuous Deployment with Docker Container
+
 on: [push]
+
 jobs:
   deploy:
     name: Docker Deployment
@@ -13,14 +15,17 @@ jobs:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: ap-northeast-2
-    - name: Run
+    - name: Run 
       env:
         SERVICE_NAME: 13-125-222-101
-        IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/lightsail-nginx:${{github.sha}}
+        IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/lightsail-nginx:${{ github.sha }}
       run: |
         echo $IMAGE_NAME:$IMAGE_TAG
         docker build -t $IMAGE_NAME .
-        docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{secrets.DOCKERHUB_TOKEN }}
+        docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
         docker push $IMAGE_NAME
-        sed -i '' "s/IMAGE_NAME_AND_TAG/${IMAGE_NAME}/g" deployment.yaml
+        envsubst < deployment.yaml.template > deployment.yaml
+        curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+        unzip awscliv2.zip
+        sudo ./aws/install
         aws lightsail create-container-service-deployment --service-name $SERVICE_NAME --cli-input-yaml file://deployment.yaml
