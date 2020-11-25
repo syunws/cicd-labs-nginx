@@ -16,7 +16,7 @@ jobs:
     - name: Run
       env:
         SERVICE_NAME: 13-125-222-101
-        IMAGE_NAME: ${{ DOCKERHUB_USERNAME }}/lightsail-nginx:${{github.sha}}
+        IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/lightsail-nginx:${{github.sha}}
       run: |
         echo $IMAGE_NAME:$IMAGE_TAG
         docker build -t $IMAGE_NAME .
