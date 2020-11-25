@@ -1,7 +1,7 @@
 serviceName: '13-125-222-101'
 containers:
   nginx:
-   image: '{IMAGE_NAME}'
+   image: '${IMAGE_NAME}'
    ports:
     '80': 'HTTP'
 publicEndpoint:
