@@ -1,4 +1,4 @@
-ame: Continuous Deployment with Docker Container
+name: Continuous Deployment with Docker Container
 on: [push]
 jobs:
   deploy:
